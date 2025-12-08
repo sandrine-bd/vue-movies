@@ -54,30 +54,23 @@ import RatingStars from '../components/RatingStars.vue';
     import api from '../api/axios'
     import RatingStars from '../components/RatingStars.vue'
 
-    const user = ref({})
-    const reviews = ref([])
-    const collections = ref([])
-    const following = ref([])
-    const followers = ref([])
+    const user = ref({});
+    const reviews = ref([]);
+    const ratings = ref([]);
+    const collections = ref([]);
+    const followers = ref([]);
+    const followings = ref([]);
+
+    const userId = localStorage.getItem("userId"); // stocké à la connexion
 
     const fetchProfile = async () => {
-        const resUser = await api.get('/api/users/me')
-        user.value = resUser.data
+        user.value = (await api.get(`/users/${userId}`)).data;
+        reviews.value = (await api.get(`/users/${userId}/reviews`)).data["hydra:member"];
+        ratings.value = (await api.get(`/users/${userId}/ratings`)).data["hydra:member"];
+        collections.value = (await api.get(`/users/${userId}/collections`)).data["hydra:member"];
+        followers.value = (await api.get(`/users/${userId}/followers`)).data["hydra:member"];
+        followings.value = (await api.get(`/users/${userId}/follows`)).data["hydra:member"];
+    };  
 
-        const resReviews = await api.get('/api/users/me/reviews')
-        reviews.value = resReviews.data 
-
-        const resCollections = await api.get('/api/users/me/collections')
-        collections.value = resCollections.data
-
-        const resFollowing = await api.get('/api/users/me/follows')
-        following.value = resFollowing.data 
-
-        const resFollowers = await api.get('/api/users/me/followers')
-        followers.value = resFollowers.data 
-    }
-
-    const followUser = async (id) => {
-        await api.post(`/api/users/)
-    }
+    onMounted(fetchProfile);
 </script>

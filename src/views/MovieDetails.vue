@@ -1,10 +1,3 @@
-<script setup lang="ts">
-import RatingStars from '../components/RatingStars.vue';
-
-</script>
-
-// Informations complètes + reviews + noter le film
-
 <template>
     <div class="movie-detail">
         <div class="header">
@@ -53,62 +46,20 @@ import RatingStars from '../components/RatingStars.vue';
     import { useRoute } from 'vue-router'
     import { api } from '@/api/axios'
     import RatingStars from '@/components/RatingStars.vue'
+    
+    const route = useRoute();
+    const movie = ref(null);
+    const ratings = ref([]);
+    const reviews = ref([]);
 
-    const route = useRoute()
-    const movie = ref({})
-    const reviews = ref([])
-    const userRating = ref(0)
-    const newComment = ref('')
-    const newRating = ref(0)
-    const collections = ref([])
-    const selectedCollection = ref(null)
-    const isLoggedIn = ref(true) // remplacer par logique d'authentification
+    const fetchData = async () => {
+        const id = route.params.id;
+        movie.value = (await api.get(`/movies/${id}`)).data;
+        ratings.value = (await api.get(`/movies/${id}/ratings`)).data["hydra:member"];
+        reviews.value = (await api.get(`/movies/${id}/reviews`)).data["hydra:member"];
+    };
 
-    const fetchMovie = async () => {
-        const res = await api.get(`/api/movies/${route.params.id}`)
-        movie.value = res.data
-        userRating.value = res.data.userRating || 0
-    }
-
-    const fetchReviews = async () => {
-        const res = await api.get(`/api/movies/${route.params.id}/reviews`)
-        reviews.value = res.data
-    }
-
-    const fetchCollections = async () => {
-        const res = await api.get(`/api/users/me/collections`)
-        collections.value = res.data
-    }
-
-    const updateRating = async () => {
-        await api.patch(`/api/movies/${movie.value.id}/rating`, { rating })
-        userRating.value = rating
-    }
-
-    const submitReview = async () => {
-        if (!newComment.value || newRating.value === 0) return
-        await api.post(`/api/movies/${movie.value.id}/reviews`, {
-            comment: newComment.value,
-            rating: newRating.value,
-        })
-        newComment.value = ''
-        newRating.value = 0
-        fetchReviews()
-    }
-
-    const addToCollection = async () => {
-        if (!selectedCollection.value) return
-        await api.post(`/api/collections/${selectedCollection.value}/movies`, {
-            movieId: movie.value.id,
-        })
-        alert('Film ajouté à la collection !')
-    }
-
-    onMounted(() => {
-        fetchMovie()
-        fetchReviews()
-        fetchCollections()
-    })
+    onMounted(fetchData);
 </script>
 
 <style>

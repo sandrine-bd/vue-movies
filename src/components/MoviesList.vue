@@ -1,11 +1,3 @@
-<script setup lang="ts">
-import RatingStars from '../components/RatingStars.vue';
-
-</script>
-
-// Pagination intégrée
-// Affiche les cards de films avec image, titre et note moyenne
-
 <template>
     <div>
         <h1>Liste des films</h1>

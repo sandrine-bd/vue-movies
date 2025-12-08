@@ -1,1 +1,0 @@
-// Gestion JWT ou token si on utilise Lexik JWT dans Symfony

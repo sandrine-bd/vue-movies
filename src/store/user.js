@@ -1,0 +1,1 @@
+// Pinia ou Vuex pour l’état global

@@ -17,26 +17,31 @@
 </template>
 
 <script setup>
-    import { ref } from 'vue'
-    import { api } from '@api/axios'
+    import { ref, onMounted, watch } from 'vue'
+    import api from '@/api/axios'
     import Pagination from '@/components/Pagination.vue'
-    import RatingStars from '@/components/RatingStars.vue'
 
     const movies = ref([])
-    const search = ref('')
-    const currentPage = ref(1)
+    const page = ref(1)
+    const itemsPerPage = 12
+    const totalItems = ref(0)
+    const title = ref("")
 
     const fetchMovies = async () => {
-        const res = await api.get('/api/movies', { params: { search: search.value } })
-        movies.value = res.data
-    }
+        const response = await api.get("/movies", {
+            params: {
+                page: page.value,
+                itemsPerPage,
+                title: title.value || undefined,
+            },
+        });
 
-    const updateRating = async (id, rating) => {
-        await api.patch(`/api/movies/${id}/rating`, { rating })
-        fetchMovies()
-    }
+        movies.value = response.data["hydra:member"];
+        totalItems.value = response.data["hydra:totalItems"];
+    };
 
-    fetchMovies()
+    watch([page, title], fetchMovies);
+    onMounted(fetchMovies);
 </script>
 
 <style>

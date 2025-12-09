@@ -33,7 +33,7 @@
 
             <div v-if="isLoggedIn" class="new-review">
                 <h3>Écrire une critique</h3>
-                <textarea v-model:"newComment" placeholder="Votre critique..."></textarea>
+                <textarea v-model="newComment" placeholder="Votre critique..."></textarea>
                 <RatingStars :rating="newRating" @update:rating="val => newRating = val" />
                 <button @click="submitReview">Envoyer</button>
             </div>

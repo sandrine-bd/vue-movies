@@ -1,8 +1,3 @@
-<script setup lang="ts">
-import RatingStars from '../components/RatingStars.vue';
-
-</script>
-
 <template>
     <div class="profile-page">
         <div class="user-info">
@@ -50,27 +45,27 @@ import RatingStars from '../components/RatingStars.vue';
 </template>
 
 <script setup>
-    import { ref, onMoutned } from 'vue'
-    import api from '../api/axios'
-    import RatingStars from '../components/RatingStars.vue'
+import { ref, onMounted } from "vue";
+import api from "@/api/axios";
 
-    const user = ref({});
-    const reviews = ref([]);
-    const ratings = ref([]);
-    const collections = ref([]);
-    const followers = ref([]);
-    const followings = ref([]);
+const user = ref({});
+const reviews = ref([]);
+const ratings = ref([]);
+const collections = ref([]);
+const followers = ref([]);
+const followings = ref([]);
 
-    const userId = localStorage.getItem("userId"); // stocké à la connexion
+const userId = localStorage.getItem("userId"); // stocké à la connexion
 
-    const fetchProfile = async () => {
-        user.value = (await api.get(`/users/${userId}`)).data;
-        reviews.value = (await api.get(`/users/${userId}/reviews`)).data["hydra:member"];
-        ratings.value = (await api.get(`/users/${userId}/ratings`)).data["hydra:member"];
-        collections.value = (await api.get(`/users/${userId}/collections`)).data["hydra:member"];
-        followers.value = (await api.get(`/users/${userId}/followers`)).data["hydra:member"];
-        followings.value = (await api.get(`/users/${userId}/follows`)).data["hydra:member"];
-    };  
+const fetchProfile = async () => {
+  user.value = (await api.get(`/users/${userId}`)).data;
 
-    onMounted(fetchProfile);
+  reviews.value = (await api.get(`/users/${userId}/reviews`)).data["hydra:member"];
+  ratings.value = (await api.get(`/users/${userId}/ratings`)).data["hydra:member"];
+  collections.value = (await api.get(`/users/${userId}/collections`)).data["hydra:member"];
+  followers.value = (await api.get(`/users/${userId}/followers`)).data["hydra:member"];
+  followings.value = (await api.get(`/users/${userId}/follows`)).data["hydra:member"];
+};
+
+onMounted(fetchProfile);
 </script>

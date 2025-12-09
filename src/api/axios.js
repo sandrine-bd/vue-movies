@@ -1,18 +1,19 @@
-import axios from 'axios';
+import axios from 'axios' // crée une seule instance axios 
 
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api', // URL de l'API Symfony
+export const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api', // URL de base définie par variable d'environnement Vite
   headers: {
-    'Content-Type': 'application/json',
-  },
+    'Content-Type': 'application/json', // adapté aux requêtes PATCH
+  }
 })
 
-axios.interceptors.request.use(config => {
-    if(config.method === 'patch') {
-        config.headers['Content-Type'] = 'application/merge-patch+json';
-    } return config;
-    }, error => {
-        return Promise.reject(error);
-});
+// Intercepteur pour injecter automatiquement le token JWT si l'utilisateur est connecté
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token')
 
-export default api
+    if(token) {
+        config.headers.Authorization = `Bearer ${token}`
+    }
+
+    return config
+})

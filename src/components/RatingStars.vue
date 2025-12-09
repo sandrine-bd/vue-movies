@@ -22,5 +22,12 @@
 </script>
 
 <style>
-  .cursor-pointer { cursor: pointer; }
+.cursor-pointer { cursor: pointer; }
+
+.rating-stars {
+  display: flex;
+  cursor: pointer;
+  gap: 4px;
+  align-items: center;
+}
 </style>

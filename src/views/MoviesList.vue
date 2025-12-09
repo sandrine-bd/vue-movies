@@ -1,60 +1,70 @@
 <template>
     <div class="movies-list">
         <h1>Liste des films</h1>
+
+        <!-- Barre de recherche et filtres -->
         <div class="search-bar">
             <input type="text" v-model="search" placeholder="Rechercher un film..." @keyup.enter="fetchMovies" />
             <button @click="fetchMovies">Rechercher</button>
-    </div>
+            <select v-model="selectedGenre" @change="fetchMovies">
+                <option value="">Tous les genres</option>
+                <option v-for="g in genres" :key="g.id" :value="g.id">{{ g.name }}</option>
+            </select>
+        </div>
     
-    <div class="movies-grid">
-        <div v-for="movie in movies" :key="movie.id" class="movie-card">
-            <router-link :to="`/movie/${movie.id}`">
-                <img :src="movie.poster" :alt="movie.title" class="poster" />
-                <h3>{{ movie.title }}</h3>
-            </router-link>
-            <RatingStars :rating="movie.userRating || movie.averageRating" @update:rating="val => updateRating(movie.id, val)" />
-            </div>
+        <!-- Grille des films -->
+        <div class="movies-grid">
+            <MovieCard
+            v-for="movie in moviesStore.movies"
+            :key="movie.id"
+            :movie="movie"
+            />
         </div>
         
+        <!-- Pagination -->
         <Pagination
-            :total-items="totalItems"
+            :total-items="moviesStore.totalItems"
             :page-size="itemsPerPage"
             :current-page="currentPage"
-            @change-page="page => { currentPage = page; fetchMovies() }"
+            @update:currentPage="page => { currentPage = page; fetchMovies() }"
         />
     </div>
 </template>
 
 <script setup>
-    import { ref, onMounted, watch } from 'vue'
+    import { ref, onMounted } from 'vue'
     import api from '@/api/axios'
+    import { useMoviesStore } from '@/store/movies'
+    import MovieCard from '@/components/MovieCard.vue'
     import Pagination from '@/components/Pagination.vue'
-    import RatingStars from '@/components/RatingStars.vue'
 
-    const movies = ref([])
+    const moviesStore = useMoviesStore()
     const currentPage = ref(1)
     const itemsPerPage = 12
-    const totalItems = ref(0)
     const search = ref('')
+    const selectedGenre = ref('')
+    const genres = ref([])
 
+    // Charger les films
     const fetchMovies = async () => {
-        try {
-            const response = await api.get("/movies", {
-                params: {
-                    page: currentPage.value,
-                    itemsPerPage,
-                    title: search.value || undefined
-                }
-            })
-            movies.value = response.data["hydra:member"]
-            totalItems.value = response.data["hydra:totalItems"]
-        } catch (err) {
-            console.error("Erreur lors du chargement des films", err)
-        }
-    };
+        await moviesStore.fetchMovies({
+            page: currentPage.value,
+            itemsPerPage,
+            title: search.value || undefined,
+            genreId: selectedGenre.value || undefined
+        })
+    }
 
-    watch([currentPage, search], fetchMovies)
-    onMounted(fetchMovies)
+    // Charger les genres
+    const fetchGenres = async () => {
+        const res = await api.get('/genres')
+        genres.value = res.data['hydra:member'] || []
+    }
+
+    onMounted(async () => {
+        await fetchGenres()
+        await fetchMovies()
+    })
 </script>
 
 <style>
@@ -68,5 +78,11 @@
         border: 1px solid #ccc;
         padding: 0.5rem;
         border-radius: 5px;
+    }
+
+    .search-bar {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
     }
 </style>

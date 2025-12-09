@@ -1,8 +1,8 @@
 <template>
   <div class="pagination">
-    <button @click="goToPage(props.currentPage - 1)" :disabled="props.currentPage <= 1">Prev</button>
-    <span>Page {{ props.currentPage }} / {{ totalPages }}</span>
-    <button @click="goToPage(props.currentPage + 1)" :disabled="props.currentPage >= totalPages">Next</button>
+    <button :disabled="currentPage === 1" @click="changePage(currentPage - 1)">Précédent</button>
+    <span>{{ currentPage }} / {{ totalPages }}</span>
+    <button :disabled="currentPage === totalPages" @click="changePage(currentPage + 1)">Suivant</button>
   </div>
 </template>
 
@@ -24,20 +24,9 @@ const props = defineProps({
   }
 })
 
-// Déclare les événements
-const emit = defineEmits(['change-page'])
-
-// Calcul du nombre total de pages
-const totalPages = computed(() => {
-  return Math.ceil(props.totalItems / props.pageSize) || 1
-})
-
-// Fonction pour changer de page
-const goToPage = (page) => {
-  if (page >= 1 && page <= totalPages.value) {
-    emit('change-page', page)
-  }
-}
+const emit = defineEmits(['update:currentPage']) // Déclare les événements
+const totalPages = computed(() => Math.ceil(props.totalItems / props.pageSize) || 1) // Calcul du nombre total de pages
+const changePage = (page) => emit('update:currentPage', page) // Fonction pour changer de page
 </script>
 
 <style scoped>

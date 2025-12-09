@@ -1,27 +1,20 @@
 import { defineStore } from 'pinia'
 import { api } from '@/api/axios'
 
-export const useAuthStore = defineStore('auth', {
+export const useAuthStore = defineStore('userAuth', {
     state: () => ({
-        user: JSON.parse(localStorage.getItem('user')) || null,
-        token: localStorage.getItem('token') || null,
+        user: null,
+        token: null,
     }),
-
-    getters: {
-        isAuthenticated: (state) => !!state.token,
-    },
-
     actions: {
-        // Connexion : email + mot de passe - Réponse attendue de l'API : token: "XXX", user: { id, username, email }
+         // Connexion : email + mot de passe - Réponse attendue de l'API : token: "XXX", user: { id, username, email }
         async login(credentials) {
             try {
                 const response = await api.post('/login', credentials)
                 this.token = response.data.token
                 this.user = response.data.user
-                // Persist
                 localStorage.setItem('token', this.token)
                 localStorage.setItem('user', JSON.stringify(this.user))
-                // Configure Axios
                 api.defaults.headers.common['Authorization'] = `Bearer ${this.token}`
                 return true
             } catch (error) {
@@ -29,7 +22,6 @@ export const useAuthStore = defineStore('auth', {
                 return false
             }
         },
-
         // Déconnexion : supprime tout 
         logout() {
             this.user = null
@@ -38,13 +30,11 @@ export const useAuthStore = defineStore('auth', {
             localStorage.removeItem('token')
             delete api.defaults.headers.common['Authorization']
         },
-
         // Recharge les données au cas où Axios perdrait le token 
         init() {
             if (this.token) {
                 api.defaults.headers.common['Authorization'] = `Bearer ${this.token}`
             }
         }
-
     }
 })

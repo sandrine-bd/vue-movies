@@ -45,27 +45,27 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import api from "@/api/axios";
+import { ref, onMounted } from "vue"
+import api from "@/api/axios"
 
-const user = ref({});
-const reviews = ref([]);
-const ratings = ref([]);
-const collections = ref([]);
-const followers = ref([]);
-const followings = ref([]);
+const user = ref({})
+const reviews = ref([])
+const ratings = ref([])
+const collections = ref([])
+const followers = ref([])
+const followings = ref([])
 
 const userId = localStorage.getItem("userId"); // stocké à la connexion
 
 const fetchProfile = async () => {
-  user.value = (await api.get(`/users/${userId}`)).data;
+  user.value = (await api.get(`/users/${userId}`)).data
 
-  reviews.value = (await api.get(`/users/${userId}/reviews`)).data["hydra:member"];
-  ratings.value = (await api.get(`/users/${userId}/ratings`)).data["hydra:member"];
-  collections.value = (await api.get(`/users/${userId}/collections`)).data["hydra:member"];
-  followers.value = (await api.get(`/users/${userId}/followers`)).data["hydra:member"];
-  followings.value = (await api.get(`/users/${userId}/follows`)).data["hydra:member"];
+  reviews.value = (await api.get(`/users/${userId}/reviews`)).data["hydra:member"]
+  ratings.value = (await api.get(`/users/${userId}/ratings`)).data["hydra:member"]
+  collections.value = (await api.get(`/users/${userId}/collections`)).data["hydra:member"]
+  followers.value = (await api.get(`/users/${userId}/followers`)).data["hydra:member"]
+  followings.value = (await api.get(`/users/${userId}/follows`)).data["hydra:member"]
 };
 
-onMounted(fetchProfile);
+onMounted(fetchProfile)
 </script>

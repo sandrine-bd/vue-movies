@@ -1,6 +1,6 @@
 import axios from 'axios' // crée une seule instance axios 
 
-export const api = axios.create({
+const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api', // URL de base définie par variable d'environnement Vite
   headers: {
     'Content-Type': 'application/json', // adapté aux requêtes PATCH
@@ -17,3 +17,5 @@ api.interceptors.request.use((config) => {
 
     return config
 })
+
+export default api

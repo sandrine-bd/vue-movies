@@ -44,22 +44,22 @@
 <script setup>
     import { ref, onMounted } from 'vue'
     import { useRoute } from 'vue-router'
-    import { api } from '@/api/axios'
+    import api from '@/api/axios'
     import RatingStars from '@/components/RatingStars.vue'
     
-    const route = useRoute();
-    const movie = ref(null);
-    const ratings = ref([]);
-    const reviews = ref([]);
+    const route = useRoute()
+    const movie = ref(null)
+    const ratings = ref([])
+    const reviews = ref([])
 
     const fetchData = async () => {
         const id = route.params.id;
-        movie.value = (await api.get(`/movies/${id}`)).data;
-        ratings.value = (await api.get(`/movies/${id}/ratings`)).data["hydra:member"];
-        reviews.value = (await api.get(`/movies/${id}/reviews`)).data["hydra:member"];
+        movie.value = (await api.get(`/movies/${id}`)).data
+        ratings.value = (await api.get(`/movies/${id}/ratings`)).data["hydra:member"]
+        reviews.value = (await api.get(`/movies/${id}/reviews`)).data["hydra:member"]
     };
 
-    onMounted(fetchData);
+    onMounted(fetchData)
 </script>
 
 <style>

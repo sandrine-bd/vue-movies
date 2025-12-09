@@ -33,9 +33,9 @@
 
 <script setup>
     import { computed } from 'vue'
-    import { userAuthStore } from '@/store/auth'
+    import { useAuthStore } from '@/store/auth'
 
-    const auth = userAuthStore()
+    const auth = useAuthStore()
 
     const isLoggedIn = computed(() => auth.isAuthenticated)
     const user = computed(() => auth.user)

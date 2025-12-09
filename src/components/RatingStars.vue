@@ -1,23 +1,26 @@
 <template>
   <div class="rating-stars">
-    <Star
-      v-for="i in 5"
-      :key="i"
-      :size="24"
-      :weight="i <= rating ? 'fill' : 'regular'"
-      @click="$emit('update:rating', i)"
-      class="cursor-pointer"
-    />
+    <span v-for="n in 5" :key="n" @click="update(n)">
+      <Icon :icon="n <= rating ? 'ph:star-fill' : 'ph:star'" />
+    </span>
   </div>
 </template>
 
 <script setup>
-    import { Star } from '@phosphor-icons/vue'
-    defineProps({
-        rating: Number,
-    })
+  import { Icon } from '@iconify/vue'
+
+  const props = defineProps({
+    rating: { type: Number, default: 0 }
+  })
+
+  const emit = defineEmits(['update:rating'])
+
+  function update(value) {
+    emit('update:rating', value)
+  }
+
 </script>
 
 <style>
-    .cursor-pointer { cursor: pointer; }
+  .cursor-pointer { cursor: pointer; }
 </style>

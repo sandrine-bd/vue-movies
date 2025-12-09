@@ -8,14 +8,12 @@ const api = axios.create({
 })
 
 // Intercepteur pour injecter automatiquement le token JWT si l'utilisateur est connecté
-api.interceptors.request.use((config) => {
+api.interceptors.request.use(config => {
   const token = localStorage.getItem('token')
-
-    if(token) {
-        config.headers.Authorization = `Bearer ${token}`
-    }
-
-    return config
+  if(token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config
 })
 
 export default api

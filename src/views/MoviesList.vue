@@ -1,18 +1,27 @@
 <template>
-    <div>
+    <div class="movies-list">
         <h1>Liste des films</h1>
-        <input type="text" v-model="search" placeholder="Rechercher par titre..." @input="fetchMovies" />
-
-        <div class="movies-grid">
-            <div v-for="movie in movies" :key="movie.id" class="movie-card">
-                <img :src="movie.poster" alt="" />
-                <h2>{{ movie.title }}</h2>
-                <RatingStars :rating="movie.rating" @update:rating="updateRating(movie.id, $event)" />
-                <router-link :to="`/movie/${movie.id}`">Voir détails</router-link>
+        <div class="search-bar">
+            <input type="text" v-model="search" placeholder="Rechercher un film..." @keyup.enter="fetchMovies" />
+            <button @click="fetchMovies">Rechercher</button>
+    </div>
+    
+    <div class="movies-grid">
+        <div v-for="movie in movies" :key="movie.id" class="movie-card">
+            <router-link :to="`/movie/${movie.id}`">
+                <img :src="movie.poster" :alt="movie.title" class="poster" />
+                <h3>{{ movie.title }}</h3>
+            </router-link>
+            <RatingStars :rating="movie.userRating || movie.averageRating" @update:rating="val => updateRating(movie.id, val)" />
             </div>
         </div>
-
-        <Pagination :total-items="movies.length" :page-size="10" :current-page="currentPage" @change="currentPage = $event" />
+            
+        <Pagination
+        :total-items="totalItems"
+        :page-size="itemsPerPage"
+        :current-page="currentPage"
+        @update:currentPage="page => { currentPage = page; fetchMovies() }"
+        />
     </div>
 </template>
 
@@ -20,28 +29,31 @@
     import { ref, onMounted, watch } from 'vue'
     import api from '@/api/axios'
     import Pagination from '@/components/Pagination.vue'
+    import RatingStars from '@/components/RatingStars.vue'
 
     const movies = ref([])
     const page = ref(1)
     const itemsPerPage = 12
     const totalItems = ref(0)
     const title = ref("")
+    const search = ref('')
+    const currentPage = ref(1)
 
     const fetchMovies = async () => {
         const response = await api.get("/movies", {
             params: {
                 page: page.value,
                 itemsPerPage,
-                title: title.value || undefined,
-            },
-        });
+                title: title.value || undefined
+            }
+        })
 
-        movies.value = response.data["hydra:member"];
-        totalItems.value = response.data["hydra:totalItems"];
+        movies.value = response.data["hydra:member"]
+        totalItems.value = response.data["hydra:totalItems"]
     };
 
-    watch([page, title], fetchMovies);
-    onMounted(fetchMovies);
+    watch([page, title], fetchMovies)
+    onMounted(fetchMovies)
 </script>
 
 <style>

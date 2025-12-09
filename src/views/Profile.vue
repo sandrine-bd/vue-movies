@@ -46,7 +46,7 @@
 
 <script setup>
 import { ref, onMounted } from "vue"
-import api from "@/api/axios"
+import api from '@/api/axios'
 
 const user = ref({})
 const reviews = ref([])
@@ -65,7 +65,7 @@ const fetchProfile = async () => {
   collections.value = (await api.get(`/users/${userId}/collections`)).data["hydra:member"]
   followers.value = (await api.get(`/users/${userId}/followers`)).data["hydra:member"]
   followings.value = (await api.get(`/users/${userId}/follows`)).data["hydra:member"]
-};
+}
 
 onMounted(fetchProfile)
 </script>

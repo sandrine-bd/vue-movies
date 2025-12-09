@@ -1,33 +1,13 @@
 <template>
-  <div class="pagination" v-if="totalPages > 1">
-    <button 
-      :disabled="currentPage === 1"
-      @click="changePage(currentPage - 1)"
-    >
-      Précédent
-    </button>
-
-    <button 
-      v-for="page in pages" 
-      :key="page" 
-      :class="{ active: page === currentPage }"
-      @click="changePage(page)"
-    >
-      {{ page }}
-    </button>
-
-    <button 
-      :disabled="currentPage === totalPages"
-      @click="changePage(currentPage + 1)"
-    >
-      Suivant
-    </button>
+  <div class="pagination">
+    <button @click="goToPage(props.currentPage - 1)" :disabled="props.currentPage <= 1">Prev</button>
+    <span>Page {{ props.currentPage }} / {{ totalPages }}</span>
+    <button @click="goToPage(props.currentPage + 1)" :disabled="props.currentPage >= totalPages">Next</button>
   </div>
 </template>
 
 <script setup>
-import { computed, watch } from 'vue'
-import { defineProps, defineEmits } from 'vue'
+import { computed, defineEmits } from 'vue'
 
 const props = defineProps({
   totalItems: {
@@ -36,30 +16,26 @@ const props = defineProps({
   },
   pageSize: {
     type: Number,
-    default: 12
+    required: true
   },
   currentPage: {
     type: Number,
-    default: 1
+    required: true
   }
 })
 
-const emit = defineEmits(['update:currentPage'])
+// Déclare les événements
+const emit = defineEmits(['change-page'])
 
-const totalPages = computed(() => Math.ceil(props.totalItems / props.pageSize))
-
-// Génère la liste des numéros de page
-const pages = computed(() => {
-  const arr = []
-  for (let i = 1; i <= totalPages.value; i++) {
-    arr.push(i)
-  }
-  return arr
+// Calcul du nombre total de pages
+const totalPages = computed(() => {
+  return Math.ceil(props.totalItems / props.pageSize) || 1
 })
 
-function changePage(page) {
+// Fonction pour changer de page
+const goToPage = (page) => {
   if (page >= 1 && page <= totalPages.value) {
-    emit('update:currentPage', page)
+    emit('change-page', page)
   }
 }
 </script>
@@ -67,8 +43,10 @@ function changePage(page) {
 <style scoped>
 .pagination {
   display: flex;
-  gap: 0.5rem;
+  justify-content: center;
   align-items: center;
+  gap: 1rem;
+  margin: 1rem 0;
 }
 
 button {

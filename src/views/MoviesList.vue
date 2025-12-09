@@ -15,12 +15,12 @@
             <RatingStars :rating="movie.userRating || movie.averageRating" @update:rating="val => updateRating(movie.id, val)" />
             </div>
         </div>
-            
+        
         <Pagination
-        :total-items="totalItems"
-        :page-size="itemsPerPage"
-        :current-page="currentPage"
-        @update:currentPage="page => { currentPage = page; fetchMovies() }"
+            :total-items="totalItems"
+            :page-size="itemsPerPage"
+            :current-page="currentPage"
+            @change-page="page => { currentPage = page; fetchMovies() }"
         />
     </div>
 </template>
@@ -32,27 +32,28 @@
     import RatingStars from '@/components/RatingStars.vue'
 
     const movies = ref([])
-    const page = ref(1)
+    const currentPage = ref(1)
     const itemsPerPage = 12
     const totalItems = ref(0)
-    const title = ref("")
     const search = ref('')
-    const currentPage = ref(1)
 
     const fetchMovies = async () => {
-        const response = await api.get("/movies", {
-            params: {
-                page: page.value,
-                itemsPerPage,
-                title: title.value || undefined
-            }
-        })
-
-        movies.value = response.data["hydra:member"]
-        totalItems.value = response.data["hydra:totalItems"]
+        try {
+            const response = await api.get("/movies", {
+                params: {
+                    page: currentPage.value,
+                    itemsPerPage,
+                    title: search.value || undefined
+                }
+            })
+            movies.value = response.data["hydra:member"]
+            totalItems.value = response.data["hydra:totalItems"]
+        } catch (err) {
+            console.error("Erreur lors du chargement des films", err)
+        }
     };
 
-    watch([page, title], fetchMovies)
+    watch([currentPage, search], fetchMovies)
     onMounted(fetchMovies)
 </script>
 

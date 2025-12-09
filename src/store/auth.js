@@ -4,7 +4,7 @@ import api from '@/api/axios'
 export const useAuthStore = defineStore('userAuth', {
     state: () => ({
         user: null,
-        token: null,
+        token: localStorage.getItem('token') || null,
     }),
     actions: {
          // Connexion : email + mot de passe - Réponse attendue de l'API : token: "XXX", user: { id, username, email }
@@ -21,6 +21,10 @@ export const useAuthStore = defineStore('userAuth', {
                 console.error('Erreur de connexion', error)
                 return false
             }
+        },
+        async register(data) {
+            const res = await api.post('/users', data)
+            return res.data
         },
         // Déconnexion : supprime tout 
         logout() {

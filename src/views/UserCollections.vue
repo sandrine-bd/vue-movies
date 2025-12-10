@@ -109,11 +109,7 @@ const toggleOpen = async (id) => {
 
   openedCollection.value = id
 
-  const res = await api.get(`/movies/0/custom_list_entries`, {
-    params: {
-      customList: id
-    }
-  })
+  const res = await api.get(`/custom_lists/${id}`)
 
   entries.value = res.data["hydra:member"] || []
 }

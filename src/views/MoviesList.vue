@@ -2,6 +2,11 @@
     <div class="movies-list">
         <h1>Liste des films</h1>
 
+        <!-- Message d'erreur si API indisponible -->
+        <div v-if="apiError" class="error-banner">
+            ⚠️ Impossible de se connecter à l'API. Vérifiez que le backend est démarré sur http://localhost:8000
+        </div>
+
         <!-- Barre de recherche et filtres -->
         <div class="search-bar">
             <input type="text" v-model="search" placeholder="Rechercher un film..." @keyup.enter="fetchMovies" />
@@ -11,6 +16,9 @@
                 <option v-for="g in genres" :key="g.id" :value="g.id">{{ g.name }}</option>
             </select>
         </div>
+
+        <!-- Loading state -->
+        <div v-if="loading" class="loading">Chargement...</div>
     
         <!-- Grille des films -->
         <div class="movies-grid">
@@ -44,15 +52,22 @@
     const search = ref('')
     const selectedGenre = ref('')
     const genres = ref([])
+    const loading = ref(false)
+    const apiError = ref(false)
 
     // Charger les films
     const fetchMovies = async () => {
-        await moviesStore.fetchMovies({
+        loading.value = true
+        try {
+            await moviesStore.fetchMovies({
             page: currentPage.value,
             itemsPerPage,
             title: search.value || undefined,
             genreId: selectedGenre.value || undefined
-        })
+            })
+        } finally {
+            loading.value = false
+        }
     }
 
     // Charger les genres
@@ -68,21 +83,67 @@
 </script>
 
 <style>
-    .movies-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 1rem;
-    }
+.movies-list {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
 
-    .movie-card {
-        border: 1px solid #ccc;
-        padding: 0.5rem;
-        border-radius: 5px;
-    }
+.movies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
 
-    .search-bar {
-        display: flex;
-        gap: 0.5rem;
-        margin-bottom: 1rem;
-    }
+.search-bar {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.search-bar input {
+    flex: 1;
+    min-width: 200px;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.search-bar button,
+.search-bar select {
+    padding: 0.5rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+}
+
+.search-bar button:hover {
+    background: #f0f0f0;
+}
+
+/* ✅ Styles pour messages d'erreur et loading */
+.error-banner {
+    background: #fee;
+    border: 1px solid #fcc;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    color: #c00;
+}
+
+.loading {
+    text-align: center;
+    padding: 3rem;
+    font-size: 1.2rem;
+    color: #666;
+}
+
+.no-results {
+    text-align: center;
+    padding: 3rem;
+    color: #999;
+}
 </style>

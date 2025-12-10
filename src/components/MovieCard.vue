@@ -11,12 +11,27 @@
 <script setup>
 import RatingStars from './RatingStars.vue'
 import api from '@/api/axios'
+import { useAuthStore } from '@/store/auth'
+
+const authStore = useAuthStore()
 
 const props = defineProps({
     movie: Object
 })
 
 const updateRating = async (movieId, rating) => {
-    await api.post('/ratings', { movie: movieId, rating })
+    if (!authStore.isAuthenticated) {
+        alert('Vous devez être connecté pour noter un film')
+        return
+    }
+    
+    try {
+        await api.post('/ratings', { 
+            movie: `/api/movies/${movieId}`,
+            rating: rating
+        })
+    } catch (error) {
+        console.error('Erreur notation :', error)
+    }
 }
 </script>

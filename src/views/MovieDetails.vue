@@ -19,7 +19,7 @@
         
         <!-- Ajouter critique -->
         <div v-if="authStore.user">
-            <ReviewForm :movieId="movie.id" :userId="currentUser.id" @submitted="newReview => reviews.unshift(newReview)" />
+            <ReviewForm :movieId="movie.id" :userId="authStore.user.id" @submitted="newReview => reviews.unshift(newReview)" />
         </div>
     </div>
 </template>

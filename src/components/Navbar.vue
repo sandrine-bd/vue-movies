@@ -2,7 +2,7 @@
     <nav class="navbar">
         <!-- GAUCHE : logo -->
         <router-link to="/" class="logo">
-             🎬 MovieApp
+             🎬 MovieApp 
         </router-link>
 
         <!-- DROITE : liens de navigation -->
@@ -19,7 +19,7 @@
 
             <!-- Si connecté -->
              <template v-else>
-                <router-link :to="`/user/${user.id}`" class="nav-item">
+                <router-link :to="`/users/${user.id}`" class="nav-item">
                     <i class="ph-user"></i> {{ user.name }}
                 </router-link>
 

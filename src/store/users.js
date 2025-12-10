@@ -19,7 +19,7 @@ export const useUsersStore = defineStore('users', () => {
 
     const fetchFollowing = async (userId) => {
         const res = await api.get(`/users/${userId}/follows`)
-        following.value = res.date['hydra:member']
+        following.value = res.data['hydra:member']
     }
 
     const followUser = async (userId) => await api.post(`/users/${userId}/follows`)

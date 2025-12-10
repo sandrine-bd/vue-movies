@@ -38,34 +38,96 @@
             <h2>Mes abonnés</h2>
             <div v-for="follower in followers" :key="follower.id" class="user-card">
                 <p>{{ follower.username }}</p>
-                <buttons @click="followUser(follower.id)">Suivre</buttons>
+                <button @click="followUser(follower.id)">Suivre</button>
             </div>
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue"
+import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import api from '@/api/axios'
+import RatingStars from '@/components/RatingStars.vue'
 
+const route = useRoute()
 const user = ref({})
 const reviews = ref([])
 const ratings = ref([])
 const collections = ref([])
 const followers = ref([])
-const followings = ref([])
+const following = ref([])
 
-const userId = localStorage.getItem("userId"); // stocké à la connexion
+const userId = route.params.id
 
 const fetchProfile = async () => {
-  user.value = (await api.get(`/users/${userId}`)).data
+  try {
+    user.value = (await api.get(`/users/${userId}`)).data
+    reviews.value = (await api.get(`/users/${userId}/reviews`)).data["hydra:member"] || []
+    ratings.value = (await api.get(`/users/${userId}/ratings`)).data["hydra:member"] || []
+    collections.value = (await api.get(`/users/${userId}/collections`)).data["hydra:member"] || []
+    followers.value = (await api.get(`/users/${userId}/followers`)).data["hydra:member"] || []
+    following.value = (await api.get(`/users/${userId}/follows`)).data["hydra:member"] || []
+  } catch (error) {
+    console.error("Erreur lors du chargement du profil :", error)
+  }
+}
 
-  reviews.value = (await api.get(`/users/${userId}/reviews`)).data["hydra:member"]
-  ratings.value = (await api.get(`/users/${userId}/ratings`)).data["hydra:member"]
-  collections.value = (await api.get(`/users/${userId}/collections`)).data["hydra:member"]
-  followers.value = (await api.get(`/users/${userId}/followers`)).data["hydra:member"]
-  followings.value = (await api.get(`/users/${userId}/follows`)).data["hydra:member"]
+const followUser = async (targetUserId) => {
+  try {
+    await api.post(`/users/${targetUserId}/follows`)
+    // Recharger les données
+    await fetchProfile()
+  } catch (error) {
+    console.error("Erreur follow :", error)
+  }
+}
+
+const unfollowUser = async (targetUserId) => {
+  try {
+    await api.delete(`/users/${targetUserId}/follows`)
+    // Recharger les données
+    await fetchProfile()
+  } catch (error) {
+    console.error("Erreur unfollow :", error)
+  }
 }
 
 onMounted(fetchProfile)
 </script>
+
+<style scoped>
+.profile-page {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.user-info {
+  background: #f5f5f5;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+}
+
+.collection-card,
+.review-card,
+.user-card {
+  border: 1px solid #ddd;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #0056b3;
+}
+</style>

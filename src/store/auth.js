@@ -6,6 +6,9 @@ export const useAuthStore = defineStore('userAuth', {
         user: null,
         token: localStorage.getItem('token') || null,
     }),
+    getters: {
+        isAuthenticated: (state) => !!state.token && !!state.user
+    },
     actions: {
          // Connexion : email + mot de passe - Réponse attendue de l'API : token: "XXX", user: { id, username, email }
         async login(credentials) {

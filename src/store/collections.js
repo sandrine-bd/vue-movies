@@ -7,7 +7,7 @@ export const useCollectionsStore = defineStore('collections', () => {
 
     const fetchUserCollections = async (userId) => {
         const res = await api.get(`/users/${userId}/collections`)
-        collections.value = res.data['hydra:member'] || []
+        collections.value = res.data.member || []
     }
 
     const createCollection = async (data) => {

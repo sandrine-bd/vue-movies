@@ -14,12 +14,12 @@ export const useUsersStore = defineStore('users', () => {
 
     const fetchFollowers = async (userId) => {
         const res = await api.get(`/users/${userId}/followers`)
-        followers.value = res.data['hydra:member']
+        followers.value = res.data.member || []
     }
 
     const fetchFollowing = async (userId) => {
         const res = await api.get(`/users/${userId}/follows`)
-        following.value = res.data['hydra:member']
+        following.value = res.data.member || []
     }
 
     const followUser = async (userId) => await api.post(`/users/${userId}/follows`)

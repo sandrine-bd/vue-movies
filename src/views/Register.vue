@@ -39,9 +39,7 @@
 
         <p v-if="error" class="error">{{ error }}</p>
 
-        <button type="submit" class="btn-submit">
-          S'inscrire
-        </button>
+        <button type="submit" class="btn-submit">S'inscrire</button>
       </form>
 
       <p class="login-link">

@@ -72,7 +72,7 @@ const fetchCollections = async () => {
   if (!authStore.user) return
 
   const res = await api.get(`/users/${authStore.user.id}/collections`)
-  collections.value = res.data["hydra:member"] || []
+  collections.value = res.data.member || []
 }
 
 // Créer une nouvelle collection
@@ -111,7 +111,7 @@ const toggleOpen = async (id) => {
 
   const res = await api.get(`/custom_lists/${id}`)
 
-  entries.value = res.data["hydra:member"] || []
+  entries.value = res.data.member || []
 }
 
 // Retirer un film de la collection

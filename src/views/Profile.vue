@@ -63,11 +63,11 @@ const userId = route.params.id
 const fetchProfile = async () => {
   try {
     user.value = (await api.get(`/users/${userId}`)).data
-    reviews.value = (await api.get(`/users/${userId}/reviews`)).data["hydra:member"] || []
-    ratings.value = (await api.get(`/users/${userId}/ratings`)).data["hydra:member"] || []
-    collections.value = (await api.get(`/users/${userId}/collections`)).data["hydra:member"] || []
-    followers.value = (await api.get(`/users/${userId}/followers`)).data["hydra:member"] || []
-    following.value = (await api.get(`/users/${userId}/follows`)).data["hydra:member"] || []
+    reviews.value = (await api.get(`/users/${userId}/reviews`)).data.member || []
+    ratings.value = (await api.get(`/users/${userId}/ratings`)).data.member || []
+    collections.value = (await api.get(`/users/${userId}/collections`)).data.member || []
+    followers.value = (await api.get(`/users/${userId}/followers`)).data.member || []
+    following.value = (await api.get(`/users/${userId}/follows`)).data.member || []
   } catch (error) {
     console.error("Erreur lors du chargement du profil :", error)
   }

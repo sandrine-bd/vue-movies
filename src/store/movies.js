@@ -1,4 +1,3 @@
-// src/store/movies.js
 import { defineStore } from 'pinia'
 import api from '@/api/axios'
 
@@ -29,8 +28,8 @@ export const useMoviesStore = defineStore('movies', {
         console.log('Réponse API :', response.data)
 
         // Mise à jour du store
-        this.movies = response.data['hydra:member'] || []
-        this.totalItems = response.data['hydra:totalItems'] || 0
+        this.movies = response.data.member || []
+        this.totalItems = response.data.totalItems || 0
         this.currentPage = page
         this.itemsPerPage = itemsPerPage
       } catch (error) {

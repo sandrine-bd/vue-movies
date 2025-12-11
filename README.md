@@ -4,8 +4,6 @@ Frontend en **Vue 3 (Vite + Pinia)** — Backend en **Symfony + API Platform**
 
 > Application de découverte et critique de films.
 
----
-
 ## 📖 Fonctionnalités
 
 - Parcourir et filtrer des films (titre, genre, acteur, réalisateur) avec pagination.
@@ -16,8 +14,6 @@ Frontend en **Vue 3 (Vite + Pinia)** — Backend en **Symfony + API Platform**
 - Suivre d'autres utilisateurs et consulter leur activité (notes, critiques, collections).
 
 Le frontend consomme une API REST fournie par un backend Symfony + API Platform.
-
----
 
 ## 🧭 Structure du projet (frontend)
 
@@ -47,16 +43,12 @@ src/
 │ └─ index.js
 └─ App.vue
 
----
-
 ## 🔧 Prérequis
 
 - Node.js 18+  
 - npm ou yarn  
 - Un backend Symfony + API Platform opérationnel (port par défaut : `8000`)  
 - Composer pour le backend
-
----
 
 ## ⚙️ Installation (frontend)
 

@@ -17,6 +17,7 @@ Le frontend consomme une API REST fournie par un backend Symfony + API Platform.
 
 ## 🧭 Structure du projet (frontend)
 
+```bash
 src/
 ├─ api/
 │ └─ axios.js # instance axios (baseURL via VITE_API_URL)
@@ -42,6 +43,7 @@ src/
 ├─ router/
 │ └─ index.js
 └─ App.vue
+```
 
 ## 🔧 Prérequis
 

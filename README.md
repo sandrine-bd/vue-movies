@@ -1,199 +1,163 @@
-🎬 VueMovies — Application de découverte et critique de films
+# 🎬 Passion Cinéma
 
-Frontend en Vue 3 + Vite + Pinia — Backend en Symfony + API Platform
+Frontend en **Vue 3 (Vite + Pinia)** — Backend en **Symfony + API Platform**
 
-📖 Présentation
+> Application de découverte et critique de films.
 
-VueMovies est une application web permettant de :
+---
 
-Explorer une liste de films (pagination, recherche, filtres)
+## 📖 Fonctionnalités
 
-Afficher la fiche détaillée d’un film (genres, casting, notes, critiques…)
+- Parcourir et filtrer des films (titre, genre, acteur, réalisateur) avec pagination.
+- Consulter une fiche film détaillée (année, synopsis, genres, réalisateurs, acteurs, pays, notes et critiques).
+- Créer un compte utilisateur, se connecter (JWT).
+- Noter les films, écrire/modifier/supprimer des critiques.
+- Créer des collections personnelles et y ajouter / retirer des films.
+- Suivre d'autres utilisateurs et consulter leur activité (notes, critiques, collections).
 
-Créer un compte utilisateur
+Le frontend consomme une API REST fournie par un backend Symfony + API Platform.
 
-Noter des films
+---
 
-Écrire des critiques
+## 🧭 Structure du projet (frontend)
 
-Ajouter des films à des collections personnalisées
-
-Suivre d’autres utilisateurs et voir leur activité (notes, critiques, collections)
-
-Consulter un fil d’actualité personnalisé
-
-Le frontend utilise Vue 3 (Composition API), Vite, Pinia, Axios, et l’API REST exposée par API Platform.
-
-🚀 Technologies principales
-🖥️ Frontend
-
-Vue 3 + Composition API
-
-Vite
-
-Pinia (gestion d’état)
-
-Vue Router
-
-Axios
-
-Iconify + Phosphor Icons
-
-🔗 Backend
-
-Symfony
-
-API Platform
-
-PostgreSQL (ou MySQL selon config)
-
-JWT authentication (LexikJWT)
-
-📂 Structure du projet (Frontend)
 src/
-│
 ├─ api/
-│   └─ axios.js        → instance Axios configurée
-│
+│ └─ axios.js # instance axios (baseURL via VITE_API_URL)
 ├─ components/
-│   ├─ MovieCard.vue
-│   ├─ RatingStars.vue
-│   ├─ Pagination.vue
-│   ├─ ReviewCard.vue
-│   └─ ReviewForm.vue
-│
+│ ├─ MovieCard.vue
+│ ├─ Navbar.vue
+│ ├─ Pagination.vue
+│ ├─ RatingStars.vue
+│ ├─ ReviewCard.vue
+│ └─ ReviewForm.vue
 ├─ store/
-│   ├─ auth.js
-│   ├─ movies.js
-│   └─ user.js
-│
+│ ├─ auth.js
+│ ├─ collections.js
+│ ├─ movies.js
+│ └─ users.js
 ├─ views/
-│   ├─ MoviesList.vue
-│   ├─ MovieDetails.vue
-│   ├─ Login.vue
-│   ├─ Register.vue
-│   ├─ Profile.vue
-│   └─ UserCollections.vue
-│
+│ ├─ Login.vue
+│ ├─ MoviesList.vue
+│ ├─ MovieDetails.vue
+│ ├─ Register.vue
+│ ├─ Profile.vue
+│ └─ UserCollections.vue
 ├─ router/
-│   └─ index.js
-│
+│ └─ index.js
 └─ App.vue
 
-⚙️ Installation & Lancement
-🧩 Prérequis
+---
 
-Node.js 18+
+## 🔧 Prérequis
 
-npm ou yarn
+- Node.js 18+  
+- npm ou yarn  
+- Un backend Symfony + API Platform opérationnel (port par défaut : `8000`)  
+- Composer pour le backend
 
-Un backend API Platform fonctionnel (voir section configuration)
+---
 
-📦 Installation du frontend
-git clone https://github.com/ton-user/vue-movies.git
+## ⚙️ Installation (frontend)
+
+1. Cloner le repo frontend :
+```bash
+git clone <url-de-ton-repo-frontend>
 cd vue-movies
+```
+
+2. Installer les dépendances :
+```bash
 npm install
+# ou
+yarn
+```
 
-▶️ Lancer le serveur de développement
-npm run dev
-
-
-L’application sera disponible sur :
-
-http://localhost:5173/
-
-🔧 Configuration
-🌐 Variables d’environnement
-
-Créer un fichier .env à la racine du projet :
-
+3. Créer le fichier d'environnement .env (à la racine du frontend) :
+```bash
 VITE_API_URL=http://localhost:8000/api
+```
 
+4. Démarrer le serveur de développement Vite :
+```bash
+npm run dev
+# ou
+yarn dev
+```
 
-Cela permet à Axios de cibler automatiquement l’API Symfony.
+L'application sera disponible sur : http://localhost:5173/ (ou l'URL indiquée par Vite).
 
-🔒 Authentification
+## ⚙️ Démarrage du backend (Symfony)
 
-Une fois le backend configuré avec JWT, le frontend :
+Le backend est une application Symfony / API Platform. Voici les commandes usuelles (adaptées à ton projet) :
 
-génère un token via /api/auth
+1. Se placer dans le dossier backend :
+```bash
+cd movies-api
+```
 
-stocke le token et le user dans localStorage
+2. Installer les dépendances PHP :
+```bash
+composer install
+```
 
-configure Axios pour envoyer automatiquement Authorization: Bearer <token>
+3. Configurer la base de données (adapter .env / .env.local) puis :
+```bash
+php bin/console doctrine:database:create
+php bin/console doctrine:migrations:migrate
+```
 
-🎯 Fonctionnalités principales
-🎞️ Films
+4. Démarrer le serveur de développement Vite :
+```bash
+symfony serve
+# ou
+php -S 127.0.0.1:8000 -t public
+```
 
-Pagination
+## 🔐 Authentification
+- Endpoint login : POST /api/auth → { "email": "...", "password": "..." }
+Réponse attendue : { "token": "..." }
+- Token stocké côté client dans localStorage et transmis automatiquement par Axios via l'intercepteur.
 
-Recherche par titre
+## 📡 Endpoints (extraits)
+Principaux endpoints utilisés côté frontend (API Platform) :
+- GET /api/movies — liste paginée de films
+- GET /api/movies/{id} — détails d’un film
+- GET /api/genres — liste des genres
+- GET /api/genres/{id}/movies — films par genre
+- GET /api/casts/{peopleId}/movies — films par acteur
+- GET /api/directors/{peopleId}/movies — films par réalisateur
+- GET /api/movies/{movieId}/ratings — notes d’un film
+- POST /api/ratings — créer une note
+- GET /api/movies/{movieId}/reviews — critiques d’un film
+- POST /api/reviews — créer une critique
+- GET /api/users/{userId}/collections — collections d’un utilisateur
+- POST /api/custom_lists — créer une collection
+- POST /api/auth — récupérer token (login)
 
-Filtre par genre
+Utilise la doc API Platform (ou GET /api si exposée) pour la liste complète et les schémas.
 
-Filtre par acteur
+## 🧩 Conseils d’intégration (frontend)
+- Utilise une unique instance Axios (src/api/axios.js) pour centraliser baseURL et l'intercepteur JWT.
+- Gère l'état global (utilisateur / token) avec Pinia (store/auth.js).
+- Centralise la logique films (fetch, pagination) dans store/movies.js.
+- Toujours vérifier et sécuriser les appels POST/PATCH/DELETE par la présence du token.
 
-Filtre par réalisateur
+Attention au CORS : autoriser http://localhost:5173 dans la config Symfony (NelmioCorsBundle).
 
-Carte Film avec note moyenne + note utilisateur
+## 🐞 Débogage (problèmes fréquents)
 
-⭐ Notes
+- Page blanche / erreurs d'import : vérifier vite.config.js alias @ → doit pointer vers src/.
+- Cannot find module 'axios' : exécuter npm install axios.
+- Erreurs d'exports/imports : être cohérent entre export default api et import api from '@/api/axios' ou export const api + import { api }.
+- CORS / ERR_CONNECTION_REFUSED : vérifier que le backend est démarré et que CORS est autorisé pour l'origine du frontend.
+- 500 Internal Server Error : consulter les logs Symfony (var/log/dev.log) et la sortie console du serveur Symfony.
 
-Noter un film
+## ✅ Bonnes pratiques
+- Versionne .env exemple dans .env.example, mais ne commite jamais les secrets réels.
+- Écrire des tests unitaires pour les stores et composants critiques.
+- Ajouter la persistance Pinia pour garder l’utilisateur connecté.
+- Ajouter un middleware/route guard pour les routes protégées (profil, création de critiques, etc.).
 
-Modifier une note
-
-Supprimer une note
-
-Afficher la répartition des notes (à venir)
-
-📝 Critiques
-
-Lire les critiques d’un film
-
-Rédiger une critique
-
-Modifier / Supprimer sa critique
-
-Like / dislike (option future)
-
-📁 Collections
-
-Créer des listes personnelles
-
-Ajouter / retirer des films dans une liste
-
-Afficher les collections d’un utilisateur
-
-👥 Social
-
-Suivre un utilisateur
-
-Voir ses notes
-
-Voir ses critiques
-
-Voir ses collections
-
-Fil d’actualité : /api/feed
-
-🧪 Améliorations possibles
-
-Mise en cache locale (Pinia persist / localStorage)
-
-Dark mode
-
-Recherche avancée (multi-filtres combinés)
-
-Système de recommandations
-
-Interface mobile améliorée (responsive complet)
-
-🤝 Contributions
-
-Les contributions sont les bienvenues !
-Forkez le repo, créez une branche et ouvrez une PR.
-
-📜 Licence
-
-Ce projet est disponible sous licence MIT.
+## 🤝 Contribuer
+Les contributions sont bienvenues : fork → nouvelle branche → PR. Merci d'ajouter des tests et de documenter les changements.

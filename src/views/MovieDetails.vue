@@ -5,10 +5,10 @@
 
         <div class="movie-info">
             <p><strong>Année :</strong> {{ movie.year }}</p>
-            <p v-if="movie.plot">{{ movie.plot }}</p>
+            <p v-if="movie.plot"><strong>Synopsis :</strong> {{ movie.plot }}</p>
 
             <p v-if="movie.genres?.length">
-                <strong>Genres :</strong> {{ movie.genres.map(g => g.label).join(', ') }}
+                <strong>Genre(s) :</strong> {{ movie.genres.map(g => g.label).join(', ') }}
             </p>
 
             <p v-if="movie.directors?.length">

@@ -129,7 +129,7 @@ Principaux endpoints utilisés côté frontend (API Platform) :
 - POST /api/custom_lists — créer une collection
 - POST /api/auth — récupérer token (login)
 
-Utilise la doc API Platform (ou GET /api si exposée) pour la liste complète et les schémas.
+Utilise la doc OpenAPI (http://127.0.0.1:8000/api) pour la liste complète et les schémas.
 
 ## 🧩 Conseils d’intégration (frontend)
 - Utilise une unique instance Axios (src/api/axios.js) pour centraliser baseURL et l'intercepteur JWT.

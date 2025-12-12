@@ -91,7 +91,7 @@ const fetchMovies = async () => {
             genreId: selectedGenre.value || undefined
         })
     } catch (error) {
-        console.error('Erreur lors du chargement des films:', error)
+        console.error('Erreur lors du chargement des films :', error)
         apiError.value = true
     } finally {
         loading.value = false
@@ -103,7 +103,7 @@ const fetchGenres = async () => {
         const res = await api.get('/genres')
         genres.value = res.data.member || []
     } catch (error) {
-        console.error('Erreur lors du chargement des genres:', error)
+        console.error('Erreur lors du chargement des genres :', error)
         apiError.value = true
     }
 }

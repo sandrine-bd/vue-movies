@@ -14,18 +14,28 @@ export const useMoviesStore = defineStore('movies', {
   },
 
   actions: {
-    async fetchMovies({ page = 1, itemsPerPage = 12, title, genreId } = {}) {
+    async fetchMovies({ page = 1, itemsPerPage = 12, title, genreId, actorId, directorId } = {}) {
       try {
-        const params = {
-          page,
-          itemsPerPage
+        let response
+
+        if (genreId) {
+          response = await api.get(`/genres/${genreId}/movies`, {
+            params: { page, itemsPerPage }
+          })
+        } else if (actorId) {
+          response = await api.get(`/casts/${actorId}/movies`, {
+            params: { page, itemsPerPage }
+          })
+        } else if (directorId) {
+          response = await api.get(`/directors/${directorId}/movies`, {
+            params: { page, itemsPerPage }
+          })
+        } else {
+          // Recherche générale avec titre
+          const params = { page, itemsPerPage }
+          if (title) params.title = title
+          response = await api.get('/movies', { params })
         }
-
-        if (title) params.title = title
-        if (genreId) params.genre = genreId
-
-        const response = await api.get('/movies', { params })
-        console.log('Réponse API :', response.data)
 
         // Mise à jour du store
         this.movies = response.data.member || []

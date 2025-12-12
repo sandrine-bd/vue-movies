@@ -75,7 +75,11 @@ const currentPage = ref(1)
 const itemsPerPage = 15
 const search = ref('')
 const selectedGenre = ref('')
+const selectedActor = ref('') 
+const selectedDirector = ref('') 
 const genres = ref([])
+const actors = ref([])
+const directors = ref([])
 const loading = ref(false)
 const apiError = ref(false)
 
@@ -88,7 +92,9 @@ const fetchMovies = async () => {
             page: currentPage.value,
             itemsPerPage,
             title: search.value || undefined,
-            genreId: selectedGenre.value || undefined
+            genreId: selectedGenre.value || undefined,
+            actorId: selectedActor.value || undefined,
+            directorId: selectedDirector.value || undefined
         })
     } catch (error) {
         console.error('Erreur lors du chargement des films :', error)
